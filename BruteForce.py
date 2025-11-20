@@ -1,19 +1,13 @@
-import sys
 import itertools
 import string
 from BitVector import *
 
-# ===============================================================
-# Final brute-force script for Avi Kak's EncryptForFun assignment
-# BLOCKSIZE = 16 bits (DO NOT CHANGE)
-# Keyspace = all 2-character strings of letters + digits (3844 keys)
-# ===============================================================
 
-PassPhrase = "Hopes and dreams of a million years"
+PassPhrase = "Hopes and dreams of a million years"# As found in DecryptForFun and EncryptForFun
 BLOCKSIZE = 16             # 16 bits
 numbytes = BLOCKSIZE // 8  # 2 bytes
 
-# Build IV exactly like DecryptForFun.py
+# Build IV as used in DecryptForFun.py
 def build_iv():
     bv_iv = BitVector(bitlist=[0] * BLOCKSIZE)
     for i in range(0, len(PassPhrase) // numbytes):
@@ -21,7 +15,7 @@ def build_iv():
         bv_iv ^= BitVector(textstring=textstr)
     return bv_iv
 
-# Key reduction exactly as in DecryptForFun.py
+# Key reduction as used in DecryptForFun.py
 def reduce_key(key):
     key_bv = BitVector(bitlist=[0] * BLOCKSIZE)
     for i in range(0, len(key) // numbytes):
@@ -29,7 +23,7 @@ def reduce_key(key):
         key_bv ^= BitVector(textstring=keyblock)
     return key_bv
 
-# Decrypt using a candidate key
+# Decryption attempt using a potential key
 def decrypt_attempt(cipher_bv, key):
     iv = build_iv()
     key_bv = reduce_key(key)
@@ -58,15 +52,15 @@ def main():
     expected = known_plaintext[:CHECK_LEN]
     # Load encrypted hex
     cipher_hex = open("encrypted.txt").read().strip()
-
     cipher_bv = BitVector(hexstring=cipher_hex)
 
     # Build keyspace
     chars = string.ascii_letters + string.digits
     keyspace = (''.join(p) for p in itertools.product(chars, repeat=2))
 
-    print("[*] Starting brute-force search over 3844 keys...")
+    print("[*] Starting brute-force search over 3844 keys...")#For the purpose of the assignment it's 3844 possible keys in total
 
+    #Iterates through all keys in the keyspace to potentially find the correct one used to decrypt "encrypted.txt"
     for key in keyspace:
         decrypted = decrypt_attempt(cipher_bv, key)
         if decrypted is None:
