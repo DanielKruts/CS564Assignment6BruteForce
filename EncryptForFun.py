@@ -24,7 +24,7 @@
 import sys
 from BitVector import *                                                       #(A)
 
-if len(sys.argv) != 3:                                                    #(B)
+if len(sys.argv) != 3:                                                        #(B)
     sys.exit('''Needs two command-line arguments, one for '''
              '''the message file and the other for the '''
              '''encrypted output file''')
